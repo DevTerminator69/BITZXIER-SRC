@@ -44,15 +44,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AJais980/"
+    "url": "git+https://github.com/DevTerminator69/"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/AJais980"
+    "url": "https://github.com/DevTerminator69"
   },
-  "homepage": "https://github.com/AJais980",
+  "homepage": "https://github.com/DevTerminator69",
   "devDependencies": {
     "prettier": "^3.1.1"
   }
