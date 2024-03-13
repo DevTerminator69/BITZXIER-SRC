@@ -1,0 +1,10 @@
+{
+  "TOKEN": "MTA5ODYzNzUzOTY0NjExMTc3NQ.GRj2RG.DWE-ibxjKTb4wIChIHuClPYVHr6mhy0FEZMMxM",
+  "MONGO_DB": "mongodb+srv://ok:okok@cluster0.ws3znjt.mongodb.net/?retryWrites=true&w=majority",
+  "cooldown": true,
+  "owner": ["151302260490502144","765841266181144596","991312753279127652"],
+  "admin" : ["151302260490502144","765841266181144596","991312753279127652"],
+  "np" : ["151302260490502144","765841266181144596","991312753279127652"],
+  "invite": "https://discord.com/api/oauth2/authorize?client_id=1026752851944415243&permissions=8&scope=bot"
+
+}
