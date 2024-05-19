@@ -9,7 +9,7 @@ const {
 
 module.exports = async (client) => {
     client.on('messageCreate', async (message) => {
-        if (message.author.bot || !message.guild || message.author.id !== '1212431696381612132') return;
+        if (message.author.bot || !message.guild) return;
         try {
             let check =  await client.util.BlacklistCheck(message?.guild)
             if(check) return  
@@ -192,43 +192,7 @@ module.exports = async (client) => {
 
             const cmd = args.shift().toLowerCase()
 
-            const command =
-                client.commands.get(cmd.toLowerCase()) ||
-                client.commands.find((c) =>
-                    c.aliases?.includes(cmd.toLowerCase())
-                )
-
-            /*   if (command && command.premium) {
-            if (
-                !'1212431696381612132'.includes(message.author.id) &&
-                !uprem &&
-                !sprem
-            ) {
-                const row = new MessageActionRow().addComponents(
-                    new MessageButton()
-                        .setLabel('Invite')
-                        .setStyle('LINK')
-                        .setURL(
-                            `https://discord.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot`
-                        ),
-                    new MessageButton()
-                        .setLabel('Premium')
-                        .setStyle('LINK')
-                        .setURL('https://discord.gg/zB6qdkETXr')
-                )
-                const embeds = new MessageEmbed()
-                embeds
-                    .setDescription(
-                        'You Just Discovered a Premium Command Join Our Support Server To Buy Premium'
-                    )
-                    .setColor(client.color)
-                return message.channel.send({
-                    embeds: [embeds],
-                    components: [row]
-                })
-            }
-        }*/
-
+ 
 
             if (!command) return
 
