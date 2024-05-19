@@ -119,6 +119,7 @@ module.exports = async (client) => {
             embed.setURL(temp)
         }
         if (guild.banner) embed.setImage(links)
+
         await channel.send({ embeds: [embed] })
     })
 }

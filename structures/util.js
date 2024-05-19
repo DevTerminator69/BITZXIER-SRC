@@ -7,10 +7,10 @@ const {
     MessageSelectMenu,
     MessageAttachment
 } = require('discord.js')
-const { getSettingsar } = require("../models/autorole");
+const { getSettingsar } = require('../models/autorole')
 
 this.config = require(`${process.cwd()}/config.json`)
-let globalCooldown = false;
+let globalCooldown = false
 
 module.exports = class Util {
     constructor(client) {
@@ -18,126 +18,179 @@ module.exports = class Util {
     }
 
     async sendPreview(settings, member) {
-        if (!settings.welcome?.enabled) return "Welcome message not enabled in this server";
-      
-        const targetChannel = member.guild.channels.cache.get(settings.welcome.channel);
-        if (!targetChannel) return "No channel is configured to send welcome message";
-      
-        const response = await this.client.util.buildGreeting(member, "WELCOME", settings.welcome);
-    
-        let time = settings.welcome.autodel;
-        await this.client.util.sendMessage(targetChannel, response, time);
-      
-        return `Sent welcome preview to ${targetChannel.toString()}`;
-      };
-      
-      async setStatus(settings, status) {
-        const enabled = status.toUpperCase() === "ON" ? true : false;
-        settings.welcome.enabled = enabled;
-        await settings.save();
-        return `Configuration saved! Welcome message ${enabled ? "**enabled**" : "**disabled**"}`;
-      };
-      
-      async setChannel(settings, channel) {
+        if (!settings.welcome?.enabled)
+            return 'Welcome message not enabled in this server'
+
+        const targetChannel = member.guild.channels.cache.get(
+            settings.welcome.channel
+        )
+        if (!targetChannel)
+            return 'No channel is configured to send welcome message'
+
+        const response = await this.client.util.buildGreeting(
+            member,
+            'WELCOME',
+            settings.welcome
+        )
+
+        let time = settings.welcome.autodel
+        await this.client.util.sendMessage(targetChannel, response, time)
+
+        return `Sent welcome preview to ${targetChannel.toString()}`
+    }
+
+    async setStatus(settings, status) {
+        const enabled = status.toUpperCase() === 'ON' ? true : false
+        settings.welcome.enabled = enabled
+        await settings.save()
+        return `Configuration saved! Welcome message ${enabled ? '**enabled**' : '**disabled**'}`
+    }
+
+    async setChannel(settings, channel) {
         if (!this.client.util.canSendEmbeds(channel)) {
-          return (
-            "Ugh! I cannot send greeting to that channel? I need the `Write Messages` and `Embed Links` permissions in " +
-            channel.toString()
-          );
+            return (
+                'Ugh! I cannot send greeting to that channel? I need the `Write Messages` and `Embed Links` permissions in ' +
+                channel.toString()
+            )
         }
-        settings.welcome.channel = channel.id;
-        await settings.save();
-        return `Configuration saved! Welcome message will be sent to ${channel ? channel.toString() : "Not found"}`;
-      };
-      
-      async setDescription(settings, desc) {
-        settings.welcome.embed.description = desc;
-        await settings.save();
-        return "Configuration saved! Welcome message updated";
-      };
-      
-      async setTitle(settings, title) {
-        settings.welcome.embed.title = title;
-        await settings.save();
-        return "Configuration saved! Welcome message updated";
-      };
-      
-      async setThumbnail(settings, status) {
-        settings.welcome.embed.thumbnail = status.toUpperCase() === "ON" ? true : false;
-        await settings.save();
-        return "Configuration saved! Welcome message updated";
-      };
-      
-      canSendEmbeds(channel) {
-        return channel.permissionsFor(channel.guild.me).has(["SEND_MESSAGES", "EMBED_LINKS"]);
-      };
-      
-      async buildGreeting(member, type, config) {
-        if (!config) return;
-        let content = config.content ? await this.client.util.parse(config.content, member) : `<@${member.user.id}>`;
-        const embed = new MessageEmbed();
+        settings.welcome.channel = channel.id
+        await settings.save()
+        return `Configuration saved! Welcome message will be sent to ${channel ? channel.toString() : 'Not found'}`
+    }
+
+    async setDescription(settings, desc) {
+        settings.welcome.embed.description = desc
+        await settings.save()
+        return 'Configuration saved! Welcome message updated'
+    }
+
+    async setTitle(settings, title) {
+        settings.welcome.embed.title = title
+        await settings.save()
+        return 'Configuration saved! Welcome message updated'
+    }
+
+    async setThumbnail(settings, status) {
+        settings.welcome.embed.thumbnail =
+            status.toUpperCase() === 'ON' ? true : false
+        await settings.save()
+        return 'Configuration saved! Welcome message updated'
+    }
+
+    canSendEmbeds(channel) {
+        return channel
+            .permissionsFor(channel.guild.me)
+            .has(['SEND_MESSAGES', 'EMBED_LINKS'])
+    }
+
+    async buildGreeting(member, type, config) {
+        if (!config) return
+        let content = config.content
+            ? await this.client.util.parse(config.content, member)
+            : `<@${member.user.id}>`
+        const embed = new MessageEmbed()
         if (config.embed.description) {
-          embed.setDescription(await this.client.util.parse(config.embed.description, member));
+            embed.setDescription(
+                await this.client.util.parse(config.embed.description, member)
+            )
         }
-        embed.setColor(config.embed.color ? config.embed.color : member.client.color);
+        embed.setColor(
+            config.embed.color ? config.embed.color : member.client.color
+        )
         if (config.embed.thumbnail) {
-          embed.setThumbnail(member.user.displayAvatarURL({dynamic: true}));
+            embed.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
         }
-        if(config.embed.title){
-          embed.setTitle(await this.client.util.parse(config.embed.title, member));
+        if (config.embed.title) {
+            embed.setTitle(
+                await this.client.util.parse(config.embed.title, member)
+            )
         }
         if (config.embed.footer) {
-          embed.setFooter({ text: await this.client.util.parse(config.embed.footer, member) });
+            embed.setFooter({
+                text: await this.client.util.parse(config.embed.footer, member)
+            })
         }
-      
-        if (!config.content && !config.embed.description && !config.embed.footer) {
-          return { content: `<@${member.user.id}>`, embeds: [new MessageEmbed().setColor(this.client.color).setDescription(`Hey ${member.displayName}, Welcome to the server <a:welcome:1188456678392348702>.`)] };
+
+        if (
+            !config.content &&
+            !config.embed.description &&
+            !config.embed.footer
+        ) {
+            return {
+                content: `<@${member.user.id}>`,
+                embeds: [
+                    new MessageEmbed()
+                        .setColor(this.client.color)
+                        .setDescription(
+                            `Hey ${member.displayName}, Welcome to the server <a:welcome:1188456678392348702>.`
+                        )
+                ]
+            }
         }
-        return { content, embeds: [embed] };
-      };
-      
-      async sendMessage(channel, content, seconds) {
-        if (!channel || !content) return;
-        const perms = ["VIEW_CHANNEL", "SEND_MESSAGES"];
-        if (content.embeds && content.embeds.length > 0) perms.push("EMBED_LINKS");
-        if (channel.type !== "DM" && !channel.permissionsFor(channel.guild.me).has(perms)) return;
+        return { content, embeds: [embed] }
+    }
+
+    async sendMessage(channel, content, seconds) {
+        if (!channel || !content) return
+        const perms = ['VIEW_CHANNEL', 'SEND_MESSAGES']
+        if (content.embeds && content.embeds.length > 0)
+            perms.push('EMBED_LINKS')
+        if (
+            channel.type !== 'DM' &&
+            !channel.permissionsFor(channel.guild.me).has(perms)
+        )
+            return
         try {
-          if (!seconds || seconds == 0) return await channel.send(content);
-          const reply = await channel.send(content);
-          setTimeout(() => reply.deletable && reply.delete().catch((ex) => {}), seconds * 1000);
+            if (!seconds || seconds == 0) return await channel.send(content)
+            const reply = await channel.send(content)
+            setTimeout(
+                () => reply.deletable && reply.delete().catch((ex) => {}),
+                seconds * 1000
+            )
         } catch (ex) {
-          return;
+            return
         }
-      };
-    
-      async sendWelcome(member, settings) {
-        const config = (await getSettingsar(member.guild))?.welcome;
-        if (!config || !config.enabled) return;
-      
-        const channel = member.guild.channels.cache.get(config.channel);
-        if (!channel) return;
-      
-        const response = await this.client.util.buildGreeting(member, "WELCOME", config);
-      
-        this.client.util.sendMessage(channel, response, settings.welcome.autodel);
-      };
-    
-      isHex(text) {
-        return /^#[0-9A-F]{6}$/i.test(text);
-      };
-    
-      async parse (content, member) {
-        let mention = `<@${member.user.id}>`;
+    }
+
+    async sendWelcome(member, settings) {
+        const config = (await getSettingsar(member.guild))?.welcome
+        if (!config || !config.enabled) return
+
+        const channel = member.guild.channels.cache.get(config.channel)
+        if (!channel) return
+
+        const response = await this.client.util.buildGreeting(
+            member,
+            'WELCOME',
+            config
+        )
+
+        this.client.util.sendMessage(
+            channel,
+            response,
+            settings.welcome.autodel
+        )
+    }
+
+    isHex(text) {
+        return /^#[0-9A-F]{6}$/i.test(text)
+    }
+
+    async parse(content, member) {
+        let mention = `<@${member.user.id}>`
         return content
-          .replaceAll(/\\n/g, "\n")
-          .replaceAll(/{server}/g, member.guild.name)
-          .replaceAll(/{count}/g, member.guild.memberCount)
-          .replaceAll(/{member:name}/g, member.displayName)
-          .replaceAll(/{member:mention}/g, mention)
-          .replaceAll(/{member:id}/g, member.user.id)
-          .replaceAll(/{member:created_at}/g, `<t:${Math.round(member.user.createdTimestamp/1000)}:R>`);
-      };
-    
+            .replaceAll(/\\n/g, '\n')
+            .replaceAll(/{server}/g, member.guild.name)
+            .replaceAll(/{count}/g, member.guild.memberCount)
+            .replaceAll(/{member:name}/g, member.displayName)
+            .replaceAll(/{member:mention}/g, mention)
+            .replaceAll(/{member:id}/g, member.user.id)
+            .replaceAll(
+                /{member:created_at}/g,
+                `<t:${Math.round(member.user.createdTimestamp / 1000)}:R>`
+            )
+    }
+
 
     async purgeMessages(issuer, channel, type, amount, argument) {
         if (
@@ -223,9 +276,9 @@ module.exports = class Util {
             return
         }
     }
-/**
- * @param 
- */
+    /**
+     * @param
+     */
     async isExtraOwner(member, guild) {
         const data = await this.client.db.get(`extraowner_${guild.id}`)
         if (!data) return false
@@ -257,18 +310,20 @@ module.exports = class Util {
                     name: this.client.user.username,
                     iconURL: this.client.user.displayAvatarURL()
                 })
+                .setColor(this.client.color)
+
                 .setThumbnail(
                     interaction.guild.iconURL({
                         dynamic: true
                     })
                 )
-                .setColor(this.client.color)
+
             if (funny === 'first') {
                 _commands = this.client.commands
                     .filter((x) => x.category && x.category === 'security')
                     .map((x) => `\`${x.name}\``)
                 embed.addField(
-                    `**<:bitzxier_antinuke:1181289584483643433> Antinuke \`[${_commands.length}]\`**`,
+                    `**<:Satxler_antinuke:1181289584483643433> Antinuke \`[${_commands.length}]\`**`,
                     _commands.sort().join(', ')
                 )
                 interaction
@@ -284,7 +339,7 @@ module.exports = class Util {
                     .filter((x) => x.category && x.category === 'mod')
                     .map((x) => `\`${x.name}\``)
                 embed.addField(
-                    `**<:bitzxier_moderator:1181290384576491561> Moderation \`[${_commands.length}]\`**`,
+                    `**<:Satxler_moderator:1181290384576491561> Moderation \`[${_commands.length}]\`**`,
                     _commands.sort().join(', ')
                 )
                 interaction
@@ -300,7 +355,7 @@ module.exports = class Util {
                     .filter((x) => x.category && x.category === 'info')
                     .map((x) => `\`${x.name}\``)
                 embed.addField(
-                    `**<:bitzxier_utility:1181291761667149886> Utility \`[${_commands.length}]\`**`,
+                    `**<:Satxler_utility:1181291761667149886> Utility \`[${_commands.length}]\`**`,
                     _commands.sort().join(', ')
                 )
                 interaction
@@ -316,7 +371,7 @@ module.exports = class Util {
                     .filter((x) => x.category && x.category === 'welcomer')
                     .map((x) => `\`${x.name}\``)
                 embed.addField(
-                    `**<:bitzxier_autorole:1181290290238210158> Welcomer \`[${_commands.length}]\`**`,
+                    `**<:Satxler_autorole:1181290290238210158> Welcomer \`[${_commands.length}]\`**`,
                     _commands.sort().join(', ')
                 )
                 interaction
@@ -332,7 +387,7 @@ module.exports = class Util {
                     .filter((x) => x.category && x.category === 'voice')
                     .map((x) => `\`${x.name}\``)
                 embed.addField(
-                    `**<:bitzxier_mic:1181294198046072994> Voice \`[${_commands.length}]\`**`,
+                    `**<:Satxler_mic:1181294198046072994> Voice \`[${_commands.length}]\`**`,
                     _commands.sort().join(', ')
                 )
                 interaction
@@ -343,88 +398,122 @@ module.exports = class Util {
                     .catch((_) => {})
                 return
             }
+            if (funny === 'six') {
+                let cmd = []
+                this.client.commands
+                    .filter((x) => x.category && x.category === 'customrole')
+                    .forEach((x) => {
+                        cmd.push(`\`${x.name}\``)
+                        if (x.subcommand.length) {
+                            x.subcommand.forEach((y) => {
+                                cmd.push(`\`${x.name} ${y}\``)
+                            })
+                        }
+                    })
+                embed.addField(
+                    `**<:Customrole:1199024011045253140> Customrole \`[${cmd.length}]\`**`,
+                    cmd.sort().join(', ')
+                )
+                await interaction
+                    .update({
+                        embeds: [embed]
+                    })
+                    .catch((_) => _)
+                return
+            }
+            if (funny === 'seven') {
+                _commands = this.client.commands
+                    .filter((x) => x.category && x.category === 'logging')
+                    .map((x) => `\`${x.name}\``)
+                embed.addField(
+                    `**<:logs:1200416495461732353> Logging \`[${_commands.length}]\`**`,
+                    _commands.sort().join(', ')
+                )
+                interaction
+                    .update({
+                        embeds: [embed],
+                        ephemeral: true
+                    })
+                    .catch((_) => {})
+                return
+            }
+            if (funny === 'eight') {
+                let cmd = []
+                this.client.commands
+                    .filter((x) => x.category && x.category === 'automod')
+                    .forEach((x) => {
+                        cmd.push(`\`${x.name}\``)
+                        if (x.subcommand.length) {
+                            x.subcommand.forEach((y) => {
+                                cmd.push(`\`${x.name} ${y}\``)
+                            })
+                        }
+                    })
+                embed.addField(
+                    `**<:Satxler_Automod:1205791245473943553> Automod \`[${cmd.length}]\`**`,
+                    cmd.sort().join(', ')
+                )
+                await interaction
+                    .update({
+                        embeds: [embed]
+                    })
+                    .catch((_) => _)
+                return
+            }
         } catch (err) {
             return
         }
     }
 
-async Imagine(prompt){
-    const fetch = require('node-fetch');
-let body = {q : prompt}
-    let url = 'https://devmind.thedevs.org/imagine';
 
-    let options = {
-      method: 'POST',
-      headers: {
-        Accept: '*/*',
-        'User-Agent': 'Thunder Client (https://www.thunderclient.com)',
-        Authorization: 'theDevs_klqjskis05u65ld8jyxz',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    };
-    
-   let data = await fetch(url, options)
-   data = await data.json()
-   return data[0]
-}
+    async manageAfk(message, client) {
+        const db = require('../models/afk.js')
+        let data = await db.findOne({
+            Guild: message.guildId,
+            Member: message.author.id
+        })
+        if (data) {
+            if (message.author.id === data.Member) {
+                await data.deleteOne()
+                return message.reply({
+                    embeds: [
+                        new MessageEmbed()
+                            .setColor(message.client.color)
+                            .setDescription(`I Removed Your AFK `)
+                    ]
+                })
+            }
+        }
+        const memberMentioned = message.mentions.users.first()
 
-async Ai(prompt){
-    const fetch = require('node-fetch');
-let body = {q : prompt}
-    let url = 'https://devmind.thedevs.org/chat';
-    
-    let options = {
-      method: 'POST',
-      headers: {
-        Accept: '*/*',
-        'User-Agent': 'Thunder Client (https://www.thunderclient.com)',
-        Authorization: 'theDevs_klqjskis05u65ld8jyxz',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    };
-    
-   let data = await fetch(url, options)
-   data = await data.json()
-   return data.content
-}
+        if (memberMentioned) {
+            data = await db.findOne({
+                Guild: message.guildId,
+                Member: memberMentioned.id
+            })
+            if (data) {
+                message.reply({
+                    embeds: [
+                        new MessageEmbed()
+                            .setColor(message.client.color)
+                            .setDescription(
+                                `<@${memberMentioned.id}> went AFK <t:${Math.round(data.Time / 1000)}:R>\n\nFor Reason: **${data.Reason}**`
+                            )
+                    ]
+                })
+            } else {
+                return;
+            }
+        }
+    }
 
-async manageAfk(message, client){
-    const db = require("../models/afk.js");
-    let data = await db.findOne({ Guild: message.guildId, Member: message.author.id });
-    if (data) {
-      if (message.author.id === data.Member) {
-        await data.deleteOne()
-        return message.reply({embeds: [new MessageEmbed().setColor(message.client.color).setDescription(`I Removed Your AFK `)]})
-      }
-    
+    formatBytes(bytes) {
+        if (bytes === 0) return '0 Bytes'
+        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+        const i = Math.floor(Math.log(bytes) / Math.log(1024))
+        return `${parseFloat((bytes / Math.pow(1024, i)).toFixed(2))} ${sizes[i]}`
     }
-    const memberMentioned = message.mentions.users.first();
-    
-    if (memberMentioned) {
-      data = await db.findOne({ Guild: message.guildId, Member: memberMentioned.id });
-      if (data) {
-        message.reply({embeds: [new MessageEmbed().setColor(message.client.color).setDescription(`<@${memberMentioned.id}> went AFK <t:${Math.round(data.Time/1000)}:R>\n\nFor Reason: **${data.Reason}**`)]});
-      } else {
-         return
-      }
-    }
-  };
-  inputQuery(argument) {
-    const mentionRegex = /<@!?(\d+)>/;
-    const userIdRegex = /^\d+$/;
-  
-    if (mentionRegex?.test(argument)) {
-      const userId = argument.match(mentionRegex)[1];
-      return userId;
-    } else if (userIdRegex?.test(argument)) {
-      return argument;
-    } else {
-      return argument?.toLowerCase(); 
-    }
-  }
-  
+
     ownerbutton() {
         const row = new MessageActionRow().addComponents(
             new MessageButton()
@@ -447,18 +536,34 @@ async manageAfk(message, client){
         this.client.noprefix = data
     }
     async blacklist() {
-        let data = (await this.client.db.get(`blacklist_${this.client.user.id}`))
+        let data = (await this.client.db.get(
+            `blacklist_${this.client.user.id}`
+        ))
             ? await this.client.db.get(`blacklist_${this.client.user.id}`)
             : []
         this.client.blacklist = data
     }
+    async blacklistserver() {
+        let data2 = (await this.client.data.get(
+            `blacklistserver_${this.client.user.id}`
+        ))
+            ? await this.client.data.get(`blacklistserver_${this.client.user.id}`)
+            : []
+        this.client.blacklistserver = data2
+    }
     async sleep(ms) {
-        return new Promise((resolve) => setTimeout(resolve, ms));
-      }
-      
+        return new Promise((resolve) => setTimeout(resolve, ms))
+    }
+
+    async handleRateLimit() {
+        globalCooldown = true
+        await this.client.util.sleep(5000)
+        globalCooldown = false
+    }
+
     async FuckYou(
         member,
-        reason = 'Not Whitelisted | Performed Suspicious Activity'
+        reason = 'Unwhitelisted User | Performed Suspicious Activity'
     ) {
         try {
             await member.guild.members
@@ -470,30 +575,50 @@ async manageAfk(message, client){
             return
         }
     }
+
+    async BlacklistCheck(guild) {
+        try {
+            let data = await this.client.data.get(`blacklistserver_${this.client.user.id}`) || [];
+            if (data.includes(guild.id)) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            console.error('Error checking blacklist:', error);
+            return false;
+        }
+    }
     
 
-    async sendBooster(guild, member){
-        const db = require(`${process.cwd()}/models/boost.js`);
-        const data = await db.findOne({Guild: guild.id});
-        if(!data || !data.Boost)
-          return;
-        try{
-          let channel = guild.channels.cache.get(data.Boost);
-          if(!channel) return;
-          let count = guild.premiumSubscriptionCount;
-          const embed = new MessageEmbed()
-            .setColor(guild.roles.premiumSubscriberRole.color)
-            .setAuthor({name: `🎉🎉 NEW BOOSTER 🎉🎉`, iconURL: `https://cdn.discordapp.com/emojis/1035418876470640660.gif`})
-            .setThumbnail(member.displayAvatarURL({dynamic: true}))
-            .setDescription(`**<@${member.id}> Just Boosted ${guild.name}. Thank You So Much For Boosting Our Server. We Now Have Total ${count} Boosts On Our Server!!**`)
-            .setFooter({text: `Server Boosted 🎉 `, iconURL: guild.iconURL({dynamic: true})})
-            .setTimestamp()
-          await channel.send({embeds: [embed]});
-        }catch(err){
-          return;
+    async sendBooster(guild, member) {
+        const db = require(`${process.cwd()}/models/boost.js`)
+        const data = await db.findOne({ Guild: guild.id })
+        if (!data || !data.Boost) return
+        try {
+            let channel = guild.channels.cache.get(data.Boost)
+            if (!channel) return
+            let count = guild.premiumSubscriptionCount
+            const embed = new MessageEmbed()
+                .setColor(guild.roles.premiumSubscriberRole.color)
+                .setAuthor({
+                    name: `🎉🎉 NEW BOOSTER 🎉🎉`,
+                    iconURL: `https://cdn.discordapp.com/emojis/1035418876470640660.gif`
+                })
+                .setThumbnail(member.displayAvatarURL({ dynamic: true }))
+                .setDescription(
+                    `**<@${member.id}> Just Boosted ${guild.name}. Thank You So Much For Boosting Our Server. We Now Have Total ${count} Boosts On Our Server!!**`
+                )
+                .setFooter({
+                    text: `Server Boosted 🎉 `,
+                    iconURL: guild.iconURL({ dynamic: true })
+                })
+                .setTimestamp()
+            await channel.send({ embeds: [embed] })
+        } catch (err) {
+            return
         }
-      };
-      
+    }
 
     async pagination(message, description, desc = '') {
         const lodash = require('lodash')
@@ -537,7 +662,7 @@ async manageAfk(message, client){
             if (!b.deferred) await b.deferUpdate().catch(() => {})
             if (b.message.id !== msg.id) return
             if (b.customId === 'queueprev') {
-                page = page - 1 < 0 ? pages.length - 1 : --page
+                page = page - 1 < 30 ? pages.length - 1 : --page
                 return await msg
                     .edit({
                         content: desc + this.client.util.codeText(pages[page])
@@ -582,6 +707,4 @@ async manageAfk(message, client){
     removeDuplicates2(arr) {
         return [...new Set(arr)]
     }
-    
 }
-

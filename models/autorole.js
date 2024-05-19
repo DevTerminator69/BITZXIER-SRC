@@ -1,73 +1,73 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema({
-  _id: {
-    type: String,
-    required: true,
-  },
-  data: {
-    name: String,
-    region: String,
-    owner: {
-      id: String,
-      tag: String,
+    _id: {
+        type: String,
+        required: true
     },
-    joinedAt: Date,
-    leftAt: Date,
-    bots: {
-      type: Number,
-      default: 0,
+    data: {
+        name: String,
+        region: String,
+        owner: {
+            id: String,
+            tag: String
+        },
+        joinedAt: Date,
+        leftAt: Date,
+        bots: {
+            type: Number,
+            default: 0
+        }
     },
-  },
-  booster: {
-    type: String,
-  },
-  welcome: {
-    autodel: {
-      type: Number,
-      default: 0,
+    booster: {
+        type: String
     },
-    enabled: Boolean,
-    channel: String,
-    content: String,
-    embed: {
-      image: String,
-      description: String,
-      color: String,
-      title: String,
-      thumbnail: Boolean,
-      footer: String,
+    welcome: {
+        autodel: {
+            type: Number,
+            default: 0
+        },
+        enabled: Boolean,
+        channel: String,
+        content: String,
+        embed: {
+            image: String,
+            description: String,
+            color: String,
+            title: String,
+            thumbnail: Boolean,
+            footer: String
+        }
     },
-  },
-  autorole: {
-    type: Array,
-    default: [],
-  },
-});
+    autorole: {
+        type: Array,
+        default: []
+    }
+})
 
-const Model = mongoose.model("guild2", Schema);
+const Model = mongoose.model('guild2', Schema)
 
 module.exports = {
-  getSettingsar: async (guild) => {
-    let guildData = await Model.findOne({ _id: guild.id });
-    if (!guildData) {
-      guildData = new Model({
-        _id: guild.id,
-        data: {
-          name: guild.name,
-          region: guild.preferredLocale,
-          owner: {
-            id: guild.ownerId,
-            tag: guild.members.cache.get(guild.ownerId)?.user.tag,
-          },
-          joinedAt: guild.joinedAt,
-        },
-      });
-      if (!guild.id) {
-        throw new Error("Guild ID is undefined");
-      }
-      await guildData.save();
+    getSettingsar: async (guild) => {
+        let guildData = await Model.findOne({ _id: guild.id })
+        if (!guildData) {
+            guildData = new Model({
+                _id: guild.id,
+                data: {
+                    name: guild.name,
+                    region: guild.preferredLocale,
+                    owner: {
+                        id: guild.ownerId,
+                        tag: guild.members.cache.get(guild.ownerId)?.user.tag
+                    },
+                    joinedAt: guild.joinedAt
+                }
+            })
+            if (!guild.id) {
+                throw new Error('Guild ID is undefined')
+            }
+            await guildData.save()
+        }
+        return guildData
     }
-    return guildData;
-  },
-};
+}

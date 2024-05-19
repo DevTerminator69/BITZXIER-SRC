@@ -1,59 +1,64 @@
 {
-  "dependencies": {
-    "@discordjs/voice": "^0.11.0",
-    "aki-api": "^6.0.8",
-    "axios": "^0.27.2",
-    "chalk": "^4.1.2",
-    "child_process": "^1.0.2",
-    "discord-giveaways": "^5.2.2",
-    "discord.js": "^13.14.0",
-    "djs-vanity": "^1.0.6",
-    "dotenv": "^16.0.3",
-    "edit-json-file": "^1.7.0",
-    "enmap": "^5.9.2",
-    "express": "^4.17.2",
-    "figlet": "^1.5.2",
-    "fs": "^0.0.1-security",
-    "glob": "^8.0.3",
-    "image-size": "^1.0.2",
-    "lodash": "^4.17.21",
-    "module-alias": "^2.2.2",
-    "moment": "^2.29.4",
-    "moment-duration-format": "^2.3.2",
-    "mongoose": "^8.0.3",
-    "ms": "^2.1.3",
-    "node-os-utils": "^1.3.7",
-    "openai": "^4.20.1",
-    "phin": "^3.6.1",
-    "pm2": "^5.2.0",
-    "quick.db": "^9.0.6",
-    "quickmongo": "^5.1.2",
-    "simply-djs": "^2.5.2",
-    "systeminformation": "^5.12.6",
-    "table": "^6.8.0",
-    "util": "^0.12.4",
-    "wait": "^0.4.2"
-  },
-  "name": "bitzxier",
-  "description": "Premium Bot",
-  "version": "1.0.0",
-  "main": "./index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/DevTerminator69/"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/DevTerminator69"
-  },
-  "homepage": "https://github.com/DevTerminator69",
-  "devDependencies": {
-    "prettier": "^3.1.1"
-  }
+    "dependencies": {
+        "@discordjs/voice": "^0.11.0",
+        "aki-api": "^6.0.8",
+        "anyanime": "^1.3.2",
+        "axios": "^0.27.2",
+        "chalk": "^4.1.2",
+        "child_process": "^1.0.2",
+        "discord-giveaways": "^5.2.2",
+        "discord-hybrid-sharding": "^2.1.4",
+        "discord-player": "^6.6.7",
+        "discord.js": "^13.17.1",
+        "djs-vanity": "^1.0.6",
+        "dotenv": "^16.4.5",
+        "edit-json-file": "^1.7.0",
+        "enmap": "^5.9.2",
+        "express": "^4.17.2",
+        "figlet": "^1.5.2",
+        "fs": "^0.0.1-security",
+        "glob": "^8.0.3",
+        "image-js": "^0.35.5",
+        "lodash": "^4.17.21",
+        "module-alias": "^2.2.2",
+        "moment": "^2.30.1",
+        "moment-duration-format": "^2.3.2",
+        "mongoose": "^8.0.3",
+        "ms": "^2.1.3",
+        "node-os-utils": "^1.3.7",
+        "nsfwjs": "^2.4.2",
+        "openai": "^4.20.1",
+        "phin": "^3.6.1",
+        "pm2": "^5.2.0",
+        "quick.db": "^9.1.7",
+        "quickmongo": "^5.1.2",
+        "simply-djs": "^2.5.2",
+        "superagent": "^8.1.2",
+        "systeminformation": "^5.12.6",
+        "table": "^6.8.0",
+        "util": "^0.12.4",
+        "wait": "^0.4.2"
+    },
+    "name": "satxler",
+    "description": "Premium Bot",
+    "version": "1.0.0",
+    "main": "./index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/AJais980/"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/AJais980"
+    },
+    "homepage": "https://github.com/AJais980",
+    "devDependencies": {
+        "prettier": "^3.2.5"
+    }
 }

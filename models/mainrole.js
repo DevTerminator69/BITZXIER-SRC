@@ -14,7 +14,6 @@ const Schema = mongoose.Schema({
 
 const Model = mongoose.model('guild', Schema)
 
-
 module.exports = {
     getSettings: async (guild) => {
         let guildData = await Model.findOne({ _id: guild.id })
@@ -25,7 +24,7 @@ module.exports = {
                     name: guild.name,
                     region: guild.preferredLocale,
                     owner: {
-                        id: guild.ownerId,
+                        id: guild.ownerId
                         // tag: guild.members.cache.get(guild.ownerId)?.user.tag
                     },
                     joinedAt: guild.joinedAt

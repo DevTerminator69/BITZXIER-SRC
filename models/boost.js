@@ -1,8 +1,8 @@
-const mongo = require('mongoose');
+const mongo = require('mongoose')
 
 const Schema = new mongo.Schema({
-  Guild: String,
-  Boost: String
-});
+    Guild: String,
+    Boost: String
+})
 
-module.exports = mongo.model("boost", Schema);
+module.exports = mongo.model('boost', Schema)

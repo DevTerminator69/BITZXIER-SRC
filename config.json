@@ -1,10 +1,13 @@
 {
-  "TOKEN": "MTAyNjc1Mjg1MTk0NDQxNTI0Mw.GNtKFJ.rjv2IgFR8vn_vS5urTVBazxHEWbhz8hYyvRoDo",
-  "MONGO_DB": "mongodb+srv://ok:okok@cluster0.ws3znjt.mongodb.net/?retryWrites=true&w=majority",
-  "cooldown": true,
-  "owner": ["1180425876798701588","1143155471159664710"],
-  "admin" : ["323429313032486922","259176352748404736","1180425876798701588","1061393929473359922","323429313032486922"],
-  "np" : ["323429313032486922","259176352748404736","1180425876798701588","1061393929473359922","1118553251185426432","323429313032486922","1143469898077569104", "765841266181144596"],
-  "invite": "https://discord.com/api/oauth2/authorize?client_id=1026752851944415243&permissions=8&scope=bot"
+    "TOKEN": "",
+    "MONGO_DB": "",
+    "cooldown": true,
+    "owner": ["1180425876798701588","1143155471159664710"],
+    "admin": [
 
+    ],
+    "np": [
+
+    ],
+    "invite": ""
 }
