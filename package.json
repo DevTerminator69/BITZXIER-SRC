@@ -39,9 +39,9 @@
         "util": "^0.12.4",
         "wait": "^0.4.2"
     },
-    "name": "satxler",
+    "name": "Bitzxier",
     "description": "Premium Bot",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "main": "./index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
@@ -49,15 +49,15 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/AJais980/"
+        "url": "git+https://github.com/Terminator/"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/AJais980"
+        "url": "https://github.com/Terminator"
     },
-    "homepage": "https://github.com/AJais980",
+    "homepage": "https://github.com/Terminator",
     "devDependencies": {
         "prettier": "^3.2.5"
     }
