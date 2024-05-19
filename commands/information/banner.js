@@ -8,14 +8,9 @@ module.exports = {
 
     run: async (client, message, args) => {
         let user =
-            message.mentions.members.first() ||
-            message.guild.members.cache.get(args[0]) ||
-            message.guild.members.cache.find(
-                (x) =>
-                    x.user.username.toLowerCase() === args.slice(0).join(' ') ||
-                    x.user.username === args[0]
-            ) ||
-            message.member
+            (await message.mentions.members.first()) ||
+            (await client.users.fetch(args[0])) ||
+            (await message.member)
 
         const data = await axios
             .get(`https://discord.com/api/users/${user.id}`, {
@@ -42,7 +37,7 @@ module.exports = {
             message.channel.send({
                 embeds: [
                     new MessageEmbed()
-                        .setColor(`AQUA`)
+                        .setColor(client.color)
                         .setDescription(`You Don't Have A Banner`)
                 ]
             })

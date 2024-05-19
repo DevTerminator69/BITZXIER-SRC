@@ -1,5 +1,9 @@
 const { MessageEmbed } = require('discord.js')
-const saixd = ['259176352748404736','1180425876798701588','1143155471159664710']
+const Bitzxier = [
+    '1212431696381612132',
+    '1212431696381612132',
+    '1143155471159664710'
+]
 
 module.exports = {
     name: 'extraowner',
@@ -7,7 +11,21 @@ module.exports = {
     category: 'security',
     premium: true,
     run: async (client, message, args) => {
-        if (message.author.id != message.guild.ownerId && !saixd.includes(message.author.id))
+        if (message.guild.memberCount < 30) {
+            return message.channel.send({
+                embeds: [
+                    new MessageEmbed()
+                        .setColor(client.color)
+                        .setDescription(
+                            `${client.emoji.cross} | Your Server Doesn't Meet My 30 Member Criteria`
+                        )
+                ]
+            })
+        }
+        if (
+            message.author.id != message.guild.ownerId &&
+            !Bitzxier.includes(message.author.id)
+        )
             return message.channel.send({
                 embeds: [
                     new MessageEmbed()
@@ -41,14 +59,12 @@ module.exports = {
                     value: `To View Extra Owner, Use - \`${prefix}extraowner view\``
                 }
             ])
-if(!option) {
+        if (!option) {
             message.channel.send({ embeds: [antinuke] })
-
-
-} else if (option.toLowerCase() === 'set') {
+        } else if (option.toLowerCase() === 'set') {
             const user =
                 getUserFromMention(message, args[1]) ||
-                client.users.cache.get(args[1]) 
+                client.users.cache.get(args[1])
 
             if (!user)
                 return message.channel.send({

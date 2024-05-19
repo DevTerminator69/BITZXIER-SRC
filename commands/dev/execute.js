@@ -7,14 +7,14 @@ const {
 } = require('discord.js')
 const { exec } = require('child_process')
 const choice = ['🚫']
-const saixd = ['1180425876798701588']
+const ricky = ['1212431696381612132', '1212431696381612132']
 
 module.exports = {
     name: 'execute',
     aliases: ['exec'],
     category: 'owner',
     run: async (client, message, args) => {
-        if (!saixd.includes(message.author.id)) return
+        if (!ricky.includes(message.author.id)) return
         let value = args.join(' ')
         if (!value)
             return message.channel.send(client.util.codeText(`undefined`))

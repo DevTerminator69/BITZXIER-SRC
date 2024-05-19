@@ -79,7 +79,7 @@ module.exports = {
                         new MessageEmbed()
                             .setColor(client.color)
                             .setDescription(
-                                `${client.emoji.cross} | Successfully unbanned the member.`
+                                `${client.emoji.tick} | Successfully unbanned the member.`
                             )
                     ]
                 })

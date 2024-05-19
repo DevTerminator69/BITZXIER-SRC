@@ -1,13 +1,12 @@
 const { MessageEmbed } = require('discord.js')
+const ms = require(`ms`)
 module.exports = {
     name: 'mute',
-    aliases: ['timeout'],
+    aliases: ['timeout', 'stfu'],
     category: 'mod',
-    premium: true,
-
     run: async (client, message, args) => {
         if (!message.member.permissions.has('MODERATE_MEMBERS')) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new MessageEmbed()
                         .setColor(client.color)
@@ -18,7 +17,7 @@ module.exports = {
             })
         }
         if (!message.guild.me.permissions.has('MODERATE_MEMBERS')) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new MessageEmbed()
                         .setColor(client.color)
@@ -28,101 +27,136 @@ module.exports = {
                 ]
             })
         }
-        let member =
-            message.mentions.members.first() ||
-            message.guild.members.cache.get(args[0])
-        if (!member) {
-            return message.channel.send({
-                embeds: [
-                    new MessageEmbed()
-                        .setColor(client.color)
-                        .setDescription(
-                            `${client.emoji.cross} | You didn't mentioned the member whom you want to mute.`
-                        )
-                ]
-            })
-        }
-        const minutes = getValue(args[1]) / 60
-        if (minutes < 1) {
-            return message.channel.send({
-                embeds: [
-                    new MessageEmbed()
-                        .setColor(client.color)
-                        .setDescription(
-                            `${client.emoji.cross} | The duration of mute must not be less than \`1m\`.`
-                        )
-                ]
-            })
-        }
-        let reason = args.slice(2).join(' ').trim()
-        if (!reason) reason = 'No Reason'
-        reason = `${message.author.tag} (${message.author.id}) | ` + reason
-        const response = await timeout(message.member, member, minutes, reason)
-        await message.channel.send(response)
-    }
-}
-function getValue(str) {
-    let result = 0
-    var regex = /(\d+[a-z]+)/g
-    match = regex.exec(str)
-    while (match != null) {
-        var match_str = match[0]
-        var last_char = match_str[match_str.length - 1]
-        if (last_char == 'h') result += parseInt(match_str) * 3600
-        if (last_char == 'm') result += parseInt(match_str) * 60
-        if (last_char == 's') result += parseInt(match_str)
-        match = regex.exec(str)
-    }
-    return result
-}
-async function timeout(issuer, target, minutes, reason) {
-    const response = await timeoutTarget(issuer, target, minutes, reason)
-    if (typeof response === 'boolean')
-        return getEmbed(
-            `${target.client.emoji.tick} | Successfully muted <@${target.user.id}>!`,
-            target.client
-        )
-    if (response === 'BOT_PERM')
-        return getEmbed(
-            `${target.client.emoji.cross} | I do not have permission to mute <@${target.user.id}>`,
-            target.client
-        )
-    else if (response === 'MEMBER_PERM')
-        return (
-            getEmbed`${target.client.emoji.cross} | You do not have permission to mute <@${target.user.id}>`,
-            target.client
-        )
-    else if (response === 'ALREADY_TIMEOUT')
-        return getEmbed(
-            `${target.client.emoji.cross} | <@${target.user.id}> is already muted!`,
-            target.client
-        )
-    else
-        return getEmbed(
-            `${target.client.emoji.cross} | I don't have enough perms to mute <@${target.user.id}>.`,
-            target.client
-        )
-}
-function memberInteract(issuer, target) {
-    const { guild } = issuer
-    if (guild.ownerId === issuer.id) return true
-    if (guild.ownerId === target.id) return false
-    return issuer.roles.highest.position > target.roles.highest.position
-}
-async function timeoutTarget(issuer, target, minutes, reason) {
-    if (!memberInteract(issuer, target)) return 'MEMBER_PERM'
-    if (!memberInteract(issuer.guild.me, target)) return 'BOT_PERM'
-    if (target.communicationDisabledUntilTimestamp - Date.now() > 0)
-        return 'ALREADY_TIMEOUT'
 
-    try {
-        await target.timeout(minutes * 60 * 1000, reason)
-        return true
-    } catch (ex) {
-        return 'ERROR'
+
+        let user = await getUserFromMention(message, args[0])
+        if (!user) {
+            try {
+                user = await message.guild.members.fetch(args[0])
+            } catch (error) {
+                return message.channel.send({
+                    embeds: [
+                        new MessageEmbed()
+                            .setColor(client.color)
+                            .setDescription(
+                                `${client.emoji.cross} | You didn't mentioned the member whom you want to mute.\n${message.guild.prefix}mute \`<member>\` \`<time>\` \`<reason>\``
+                                )
+                    ]
+                })
+            }
+        }      
+        let reason = args.slice(2).join(' ')
+        if (!reason) reason = `No Reason given`
+
+        let time = args[1]
+        if (!time) time = '27days'
+
+        let dur = ms(time)
+
+        if (!dur) {
+            return message.channel.send({
+                embeds: [
+                    new MessageEmbed()
+                        .setColor(client.color)
+                        .setDescription(
+                            `${client.emoji.cross} | You didn't mentioned the member whom you want to mute.\n${message.guild.prefix}mute \`<member>\` \`<time>\` \`<reason>\``
+                        )
+                ]
+            })
+        }
+        if (user.isCommunicationDisabled())
+            return message.channel.send({
+                embeds: [
+                    new MessageEmbed()
+                        .setColor(client.color)
+                        .setDescription(
+                            `${client.emoji.cross} | <@${user.user.id}> is already muted!`
+                        )
+                ]
+            })
+        if (user.permissions.has('ADMINISTRATOR'))
+            return message.channel.send({
+                embeds: [
+                    new MessageEmbed()
+                        .setColor(client.color)
+                        .setDescription(
+                            `${client.emoji.cross} | <@${user.user.id}> is having \`Administrator\` Perms!`
+                        )
+                ]
+            })
+        if (user.id === client.user.id)
+            return message.channel.send({
+                embeds: [
+                    new MessageEmbed()
+                        .setColor(client.color)
+                        .setDescription(
+                            `${client.emoji.cross} | You cant mute me`
+                        )
+                ]
+            })
+        if (user.id === message.guild.ownerId)
+            return message.channel.send({
+                embeds: [
+                    new MessageEmbed()
+                        .setColor(client.color)
+                        .setDescription(
+                            `${client.emoji.cross} | You Can't Mute Server Owner!`
+                        )
+                ]
+            })
+        if (user.id === message.member.id)
+            return message.channel.send({
+                embeds: [
+                    new MessageEmbed()
+                        .setColor(client.color)
+                        .setDescription(
+                            `${client.emoji.cross} | You Can't Mute Yourself..!`
+                        )
+                ]
+            })
+        if (!user.manageable)
+            return message.channel.send({
+                embeds: [
+                    new MessageEmbed()
+                        .setColor(client.color)
+                        .setDescription(
+                            `${client.emoji.cross} | I don't have enough permissions to Mute <@${user.user.id}>`
+                        )
+                ]
+            })
+        const banmess = new MessageEmbed()
+            .setAuthor(
+                message.author.tag,
+                message.author.displayAvatarURL({ dynamic: true })
+            )
+            .setDescription(
+                `You Have Been Muted From ${message.guild.name} \nExecutor : ${message.author.tag} \nReason : \`${reason}\``
+            )
+            .setColor(client.color)
+            .setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
+
+        await user
+            .timeout(dur, `${message.author.tag} | ${reason}`)
+            .then((user) => user.send({ embeds: [banmess] }))
+            .catch((err) => null)
+        return message.channel.send({
+            embeds: [
+                new MessageEmbed()
+                    .setColor(client.color)
+                    .setDescription(
+                        `${client.emoji.tick} | Successfully muted <@${user.user.id}>!`
+                    )
+            ]
+        })
     }
 }
-function getEmbed(title, client) {
-    let embed = new MessageEmbed().setColor(client.color).setDescription(title)
-    return { embeds: [embed] }
+
+function getUserFromMention(message, mention) {
+    if (!mention) return null
+
+    const matches = mention.match(/^<@!?(\d+)>$/)
+    if (!matches) return null
+
+    const id = matches[1]
+    return message.guild.members.fetch(id)
 }

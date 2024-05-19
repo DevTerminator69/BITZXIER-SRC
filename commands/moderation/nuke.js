@@ -13,7 +13,6 @@ module.exports = {
     premium: true,
 
     run: async (client, message, args) => {
-        
         if (!message.member.permissions.has('MANAGE_CHANNELS')) {
             let error = new MessageEmbed()
                 .setColor(client.color)

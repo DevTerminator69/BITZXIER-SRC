@@ -9,6 +9,7 @@ const {
 
 module.exports = {
     name: 'hide',
+    aliases: [],
     category: 'mod',
     premium: true,
 

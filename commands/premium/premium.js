@@ -12,20 +12,20 @@ module.exports = {
     run: async (client, message, args) => {
         if (!this.config.owner.includes(message.author.id)) return
         const embed = new MessageEmbed()
-            .setColor('#0x303037')
-            .setFooter(`Developed with 💖 By Bitzxier Team`)
+            .setColor('#0x2b2d31')
+            .setFooter(`Developed By Satxler Team`)
         const row = new MessageActionRow().addComponents(
             new MessageButton()
                 .setLabel('Premium')
                 .setStyle('LINK')
-                .setURL('https://discord.gg/5p6z8kh8sP')
+                .setURL('https://discord.gg/zB6qdkETXr ')
         )
-        let link = 'https://discord.gg/5p6z8kh8sP'
+        let link = 'https://discord.gg/zB6qdkETXr '
         if (!args[0]) {
             embed.setAuthor(
                 `${client.user.username} Premium`,
                 client.user.displayAvatarURL(),
-                'https://discord.gg/5p6z8kh8sP'
+                'https://discord.gg/zB6qdkETXr '
             )
             embed.setThumbnail(message.guild.iconURL({ dynamic: true }))
             embed.setDescription(
@@ -221,7 +221,7 @@ module.exports = {
                 embed.setAuthor(
                     `${client.user.username} Premium`,
                     client.user.displayAvatarURL(),
-                    'https://discord.gg/5p6z8kh8sP'
+                    'https://discord.gg/zB6qdkETXr '
                 )
                 embed.setThumbnail(message.guild.iconURL({ dynamic: true }))
                 embed.setDescription(

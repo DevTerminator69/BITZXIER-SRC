@@ -7,6 +7,17 @@ module.exports = {
     category: 'security',
     premium: true,
     run: async (client, message, args) => {
+        if (message.guild.memberCount < 30) {
+            return message.channel.send({
+                embeds: [
+                    new MessageEmbed()
+                        .setColor(client.color)
+                        .setDescription(
+                            `${client.emoji.cross} | Your Server Doesn't Meet My 30 Member Criteria`
+                        )
+                ]
+            })
+        }
         const settings = await getSettings(message.guild)
         let own = message.author.id == message.guild.ownerId
         const check = await client.util.isExtraOwner(

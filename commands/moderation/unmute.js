@@ -82,7 +82,7 @@ async function untimeout(issuer, target, reason) {
 async function unTimeoutTarget(issuer, target, reason) {
     if (!memberInteract(issuer, target)) return 'MEMBER_PERM'
     if (!memberInteract(issuer.guild.me, target)) return 'BOT_PERM'
-    if (target.communicationDisabledUntilTimestamp - Date.now() < 0)
+    if (target.communicationDisabledUntilTimestamp - Date.now() < 30)
         return 'NO_TIMEOUT'
 
     try {

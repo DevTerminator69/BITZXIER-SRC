@@ -2,10 +2,21 @@ const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js')
 
 module.exports = {
     name: 'wlisted',
-    aliases: ['wlist','whitelisted'],
+    aliases: ['wlist', 'whitelisted'],
     category: 'security',
     premium: true,
     run: async (client, message, args) => {
+        if (message.guild.memberCount < 30) {
+            return message.channel.send({
+                embeds: [
+                    new MessageEmbed()
+                        .setColor(client.color)
+                        .setDescription(
+                            `${client.emoji.cross} | Your Server Doesn't Meet My 30 Member Criteria`
+                        )
+                ]
+            })
+        }
         let own = message.author.id == message.guild.ownerId
         const check = await client.util.isExtraOwner(
             message.author,
@@ -50,16 +61,20 @@ module.exports = {
             })
         } else {
             await client.db.get(`${message.guild.id}_wl`).then(async (data) => {
-                  if (!data) {
+                if (!data) {
                     await client.db.set(`${message.guild.id}_wl`, {
                         whitelisted: []
                     })
                     let users = data.whitelisted
-                    let i;
+                    let i
                     for (i = 0; i < users.length; i++) {
-                        let data2 = await client.db?.get(`${message.guild.id}_${users[i]}_wl`);
+                        let data2 = await client.db?.get(
+                            `${message.guild.id}_${users[i]}_wl`
+                        )
                         if (data2) {
-                            client.db?.delete(`${message.guild.id}_${users[i]}_wl`)
+                            client.db?.delete(
+                                `${message.guild.id}_${users[i]}_wl`
+                            )
                         }
                     }
                     message.channel.send({
@@ -72,21 +87,21 @@ module.exports = {
                         ]
                     })
                 } else {
-                  const users = data.whitelisted
-                  const mentions = []
-                if (users.length !== 0) {
-                users.forEach((userId) =>
-                    mentions.push(
-                        `${client.emoji.dot} <@${userId}> (${userId})`
-                    )
-                )
-                const whitelisted = new MessageEmbed()
-                    .setColor(client.color)
-                    .setTitle(`__**Whitelisted Users**__`)
-                    .setDescription(mentions.join('\n'))
-                message.channel.send({ embeds: [whitelisted] })
-            } else {
-                   message.channel.send({
+                    const users = data.whitelisted
+                    const mentions = []
+                    if (users.length !== 0) {
+                        users.forEach((userId) =>
+                            mentions.push(
+                                `${client.emoji.dot} <@${userId}> (${userId})`
+                            )
+                        )
+                        const whitelisted = new MessageEmbed()
+                            .setColor(client.color)
+                            .setTitle(`__**Whitelisted Users**__`)
+                            .setDescription(mentions.join('\n'))
+                        message.channel.send({ embeds: [whitelisted] })
+                    } else {
+                        message.channel.send({
                             embeds: [
                                 new MessageEmbed()
                                     .setColor(client.color)
@@ -101,4 +116,3 @@ module.exports = {
         }
     }
 }
-

@@ -6,6 +6,17 @@ module.exports = {
     category: 'security',
     premium: true,
     run: async (client, message, args) => {
+        if (message.guild.memberCount < 30) {
+            return message.channel.send({
+                embeds: [
+                    new MessageEmbed()
+                        .setColor(client.color)
+                        .setDescription(
+                            `${client.emoji.cross} | Your Server Doesn't Meet My 30 Member Criteria`
+                        )
+                ]
+            })
+        }
         let own = message.author.id == message.guild.ownerId
         const check = await client.util.isExtraOwner(
             message.author,
@@ -36,7 +47,7 @@ module.exports = {
                 )
             return message.channel.send({ embeds: [higherole] })
         }
-    
+
         const antinuke = await client.db.get(`${message.guild.id}_antinuke`)
         if (!antinuke) {
             message.channel.send({
@@ -70,11 +81,15 @@ module.exports = {
                         await client.db.set(`${message.guild.id}_wl`, {
                             whitelisted: []
                         })
-                        let i;
+                        let i
                         for (i = 0; i < users.length; i++) {
-                            let data2 = await client.db?.get(`${message.guild.id}_${users[i]}_wl`);
+                            let data2 = await client.db?.get(
+                                `${message.guild.id}_${users[i]}_wl`
+                            )
                             if (data2) {
-                                client.db?.delete(`${message.guild.id}_${users[i]}_wl`)
+                                client.db?.delete(
+                                    `${message.guild.id}_${users[i]}_wl`
+                                )
                             }
                         }
 

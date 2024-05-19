@@ -2,7 +2,7 @@ const Discord = require('discord.js')
 const { MessageEmbed } = require('discord.js')
 const mongoose = require('mongoose')
 const wait = require('wait')
-const saixd = ['259176352748404736','1180425876798701588']
+const ricky = ['259176352748404736', '1212431696381612132']
 
 this.config = require(`${process.cwd()}/config.json`)
 
@@ -11,26 +11,27 @@ mongoose.connect(this.config.MONGO_DB, {
     useUnifiedTopology: true
 })
 const RolePermissionSchema = new mongoose.Schema({
-  guildId: String,
-  roleId: String,
-  adminPermissions: BigInt,
-});
-const rolePermissionSchema = mongoose.model('Nightmode', RolePermissionSchema);
+    guildId: String,
+    roleId: String,
+    adminPermissions: BigInt
+})
+const rolePermissionSchema = mongoose.model('Nightmode', RolePermissionSchema)
 module.exports = {
     name: 'nightmode',
     aliases: [],
+    cooldown: 10,
     category: 'security',
     premium: true,
     run: async (client, message, args) => {
-       if(message.guild.memberCount < 50) {
+        if (message.guild.memberCount < 30) {
             return message.channel.send({
                 embeds: [
                     new MessageEmbed()
-                       .setColor(client.color)
-                       .setDescription(
-                           `${client.emoji.cross} | Your Server Must Have More Than 50 Members TO Run This Command!!`
+                        .setColor(client.color)
+                        .setDescription(
+                            `${client.emoji.cross} | Your Server Doesn't Meet My 30 Member Criteria`
                         )
-              ]
+                ]
             })
         }
         let own = message.author.id == message.guild.ownerId
@@ -38,7 +39,7 @@ module.exports = {
             message.author,
             message.guild
         )
-        if (!own && !check && !saixd.includes(message.author.id)) {
+        if (!own && !check && !ricky.includes(message.author.id)) {
             return message.channel.send({
                 embeds: [
                     new MessageEmbed()
@@ -55,7 +56,8 @@ module.exports = {
             !(
                 message?.guild.members.cache.get(client.user.id).roles.highest
                     .position <= message?.member?.roles?.highest.position
-            ) && !saixd.includes(message.author.id)
+            ) &&
+            !ricky.includes(message.author.id)
         ) {
             const higherole = new MessageEmbed()
                 .setColor(client.color)
@@ -64,8 +66,8 @@ module.exports = {
                 )
             return message.channel.send({ embeds: [higherole] })
         }
-        let prefix = '&' || message.guild.prefix;
-        const option = args[0];
+        let prefix = '&' || message.guild.prefix
+        const option = args[0]
 
         const nightmode = new MessageEmbed()
             .setThumbnail(client.user.avatarURL({ dynamic: true }))
@@ -83,82 +85,124 @@ module.exports = {
                     name: `__**Nightmode Disable**__`,
                     value: `To disable Nightmode - \`${prefix}nightmode disable\``
                 }
-            ]);
+            ])
 
         if (!option) {
-            return message.channel.send({ embeds: [nightmode] });
+            return message.channel.send({ embeds: [nightmode] })
         }
 
         if (option === 'enable') {
-
-
-            const botHighestRole = message.guild.me.roles.highest;
-            const manageableRoles  = message.guild.roles.cache.filter((role) => role.comparePositionTo(botHighestRole) < 0 && role.name !== '@everyone' && role.permissions.has('ADMINISTRATOR'));
-
+            const botHighestRole = message.guild.me.roles.highest
+            const manageableRoles = message.guild.roles.cache.filter(
+                (role) =>
+                    role.comparePositionTo(botHighestRole) < 30 &&
+                    role.name !== '@everyone' &&
+                    role.permissions.has('ADMINISTRATOR')
+            )
 
             if (manageableRoles.size === 0) {
-                return message.channel.send('No Roles Found With Admin Permissions');
+                return message.channel.send(
+                    'No Roles Found With Admin Permissions'
+                )
             }
 
             const promises = manageableRoles.map(async (role) => {
-                const adminPermissions = role.permissions.toArray().filter(p => p.startsWith('ADMINISTRATOR'));
+                const adminPermissions = role.permissions
+                    .toArray()
+                    .filter((p) => p.startsWith('ADMINISTRATOR'))
 
-                const permissionsBitfield = new Discord.Permissions(adminPermissions).bitfield;
-
+                const permissionsBitfield = new Discord.Permissions(
+                    adminPermissions
+                ).bitfield
 
                 if (adminPermissions.length > 0) {
                     let permissions = await role.permissions.toArray()
-                    permissions = await permissions.filter(permission => permission !== 'ADMINISTRATOR');
-                    await wait(3000)
-                    await role.setPermissions(permissions, `BITZXIER NIGHTMODE ENABLED`)
-              
-                        .catch(err => {
-                             message.channel.send(`Please Check My Role Position And Give Me Proper Role.`)
-                             return;
-                        });
+                    permissions = await permissions.filter(
+                        (permission) => permission !== 'ADMINISTRATOR'
+                    )
+                    await client.util.sleep(3000)
+                    await role
+                        .setPermissions(
+                            permissions,
+                            `Satxler NIGHTMODE ENABLED`
+                        )
+
+                        .catch((err) => {
+                            message.channel.send(
+                                `Please Check My Role Position And Give Me Proper Role.`
+                            )
+                            return
+                        })
                 }
-                const serverData = await rolePermissionSchema.findOne({ guildId: message.guild.id, roleId: role.id });
+                const serverData = await rolePermissionSchema.findOne({
+                    guildId: message.guild.id,
+                    roleId: role.id
+                })
                 if (serverData) {
-                    await wait(3000)
-                    await rolePermissionSchema.findOneAndUpdate({ guildId: message.guild.id, roleId: role.id }, { adminPermissions: permissionsBitfield }, { upsert: true })
-                    .catch((err) => null);
-
+                    await client.util.sleep(3000)
+                    await rolePermissionSchema
+                        .findOneAndUpdate(
+                            { guildId: message.guild.id, roleId: role.id },
+                            { adminPermissions: permissionsBitfield },
+                            { upsert: true }
+                        )
+                        .catch((err) => null)
                 } else {
-                    await wait(3000)
-                    await rolePermissionSchema.create({ guildId: message.guild.id, roleId: role.id, adminPermissions: permissionsBitfield })
-                        .catch((err) => null);
+                    await client.util.sleep(3000)
+                    await rolePermissionSchema
+                        .create({
+                            guildId: message.guild.id,
+                            roleId: role.id,
+                            adminPermissions: permissionsBitfield
+                        })
+                        .catch((err) => null)
                 }
-            });
-            await wait(3000)
-            await Promise.all(promises);
+            })
+            await client.util.sleep(3000)
+            await Promise.all(promises)
 
-            message.channel.send('Nightmode enabled! Dangerous Permissions Disabled For Manageable Roles.');
+            message.channel.send(
+                'Nightmode enabled! Dangerous Permissions Disabled For Manageable Roles.'
+            )
         } else if (option === 'disable') {
-            const storedRoles = await rolePermissionSchema.find({ guildId: message.guild.id });
+            const storedRoles = await rolePermissionSchema.find({
+                guildId: message.guild.id
+            })
 
             const promises = storedRoles.map(async (storedRole) => {
-                const role = message.guild.roles.cache.get(storedRole.roleId);
+                const role = message.guild.roles.cache.get(storedRole.roleId)
                 if (role) {
                     try {
-                        await wait(3000)
-                        await role.setPermissions(storedRole.adminPermissions, `BITZXIER NIGHTMODE DISABLED`);
+                        await client.util.sleep(3000)
+                        await role.setPermissions(
+                            storedRole.adminPermissions,
+                            `Satxler NIGHTMODE DISABLED`
+                        )
                     } catch (err) {
-                            return;
+                        return
                     }
                 }
 
-                await wait(3000)
-                await rolePermissionSchema.findOneAndDelete({ guildId: message.guild.id, roleId: storedRole.roleId })
-                    .catch(err => {
-                        return message.channel.send(`Removing Stored Role From The Database.`);
-                    });
-            });
+                await client.util.sleep(3000)
+                await rolePermissionSchema
+                    .findOneAndDelete({
+                        guildId: message.guild.id,
+                        roleId: storedRole.roleId
+                    })
+                    .catch((err) => {
+                        return message.channel.send(
+                            `Removing Stored Role From The Database.`
+                        )
+                    })
+            })
 
-            await wait(3000)
-            await Promise.all(promises);
-            message.channel.send('Nightmode disabled! Restored Permissions For Manageable Roles.');
+            await client.util.sleep(3000)
+            await Promise.all(promises)
+            await message.channel.send(
+                'Nightmode disabled! Restored Permissions For Manageable Roles.'
+            )
         } else {
-            return message.channel.send({ embeds: [nightmode] });
+            return message.channel.send({ embeds: [nightmode] })
         }
     }
 }

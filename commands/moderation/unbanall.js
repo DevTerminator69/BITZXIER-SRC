@@ -2,7 +2,7 @@ const { Message, Client, MessageEmbed } = require('discord.js')
 
 module.exports = {
     name: 'unbanall',
-    aliases: ['ub'],
+    aliases: [],
     category: 'mod',
     premium: true,
 
