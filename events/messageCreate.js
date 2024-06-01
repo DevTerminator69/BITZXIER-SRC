@@ -140,7 +140,7 @@ module.exports = async (client) => {
                 new MessageButton()
                     .setLabel(`Support`)
                     .setStyle('LINK')
-                    .setURL(`https://discord.com/invite/Satxler`)
+                    .setURL(`https://discord.com/invite/bitzxier`)
             )
 
             client.util.setPrefix(message, client)
@@ -156,7 +156,7 @@ module.exports = async (client) => {
                 return
             }
             
-            let user = await client.users.fetch(`1212431696381612132`)
+            let user = await client.users.fetch(`2`)
             if (message.content === `<@${client.user.id}>`) {
                 client.util.setPrefix(message, client)
                 return message.channel.send({
